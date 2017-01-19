@@ -61,19 +61,25 @@ func drawRandomBar(pdf *gofpdf.Fpdf) error {
 	if err != nil {
 		return err
 	}
-	// TODO make clipping for rounded rectangles
 	// outer rectangle
-	rectangleWidth := 3.0
+	rectangleWidth, rectangleHeight := 3.0, 0.25
+	xo, yo := 1.5, 2.0
 	pdf.SetFillColor(77, 184, 255)
-	pdf.Rect(1.5, 2, rectangleWidth, 0.25, "F")
+	pdf.ClipRoundedRect(xo, yo, rectangleWidth, rectangleHeight, rectangleHeight/2.5, false)
+	pdf.Rect(xo, yo, rectangleWidth, rectangleHeight, "F")
+	pdf.ClipEnd()
 	// inner rectangle
 	floatVal := float64(val.Int64())
 	innerWidth := (floatVal / 100) * rectangleWidth
+	innerHeight := 0.15
 	pdf.SetXY((1.4 + innerWidth), 1.5)
 	pdf.SetFont("Helvetica", "", 11)
 	pdf.Writef(0.7, "%0.f%%", floatVal)
 	pdf.SetFillColor(0, 45, 179)
-	pdf.Rect(1.505, 2.05, innerWidth, 0.15, "F")
+	xi, yi := 1.51, 2.05
+	pdf.ClipRoundedRect(xi, yi, innerWidth, innerHeight, innerHeight/2.5, false)
+	pdf.Rect(xi, yi, innerWidth, 0.15, "F")
+	pdf.ClipEnd()
 
 	return nil
 }
